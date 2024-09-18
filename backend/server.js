@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////Imports/////////////////////////////////////////
 //Package Imports
 import express from 'express';
+import path from 'path';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
@@ -19,6 +20,8 @@ dotenv.config();
 /////////////////////////////////////////////////Variables/////////////////////////////////////////
 const PORT = process.env.PORT || 5000;
 
+const __dirname = path.resolve();
+
 /////////////////////////////////////////////////Middlewares/////////////////////////////////////////
 
 //1.) to parse the incoming requests with JSON payloads(from req.body)
@@ -36,6 +39,15 @@ app.use('/api/messages', messageRoutes);
 //5.) User routes
 app.use('/api/users', userRoutes);
 
+//6.) static middleware that express gives us to serve static files such as html, css, javascript, image files, sound files that we have in our frontend application
+app.use(express.static(path.join(__dirname, '/frontend/dist')));
+
+//7.) Other than mentioned routes handling
+app.get;
+'*',
+  (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+  };
 /////////////////////////////////////////Initializing the server/////////////////////////////////////
 server.listen(PORT, () => {
   connectToMongoDB();
