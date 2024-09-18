@@ -1,3 +1,4 @@
+import { useSocketContext } from '../../context/SocketContext';
 import useConversation from '../../zustand/useConversation';
 
 const Conversation = ({ conversation, emoji, lastIdx }) => {
@@ -5,6 +6,9 @@ const Conversation = ({ conversation, emoji, lastIdx }) => {
   const { selectedConversation, setSelectedConversation } = useConversation();
 
   const isSelected = selectedConversation?._id === conversation._id;
+
+  const { onlineUsers } = useSocketContext();
+  const isOnline = onlineUsers.includes(conversation._id);
 
   return (
     <>
@@ -14,7 +18,7 @@ const Conversation = ({ conversation, emoji, lastIdx }) => {
         } hover:bg-sky-500 rounded p-2 py-1 cursor-pointer`}
         onClick={() => setSelectedConversation(conversation)}
       >
-        <div className="avatar online">
+        <div className={`avatar ${isOnline ? 'online' : 'offline'}`}>
           <div className="w-12 rounded-full">
             <img src={conversation.profilePic} alt="user avatar" />
           </div>

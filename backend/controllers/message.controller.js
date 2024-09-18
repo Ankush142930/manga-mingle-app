@@ -1,5 +1,7 @@
 import Message from '../models/message.model.js';
 import Conversation from '../models/conversation.model.js';
+import { getReceiverSocketId } from '../socket/socket.js';
+import { io } from '../socket/socket.js';
 
 //GET MESSAGES CONTROLLER FUNCTION
 export const getMessages = async (req, res) => {
@@ -56,13 +58,18 @@ export const sendMessage = async (req, res) => {
       conversation.messages.push(newMessage._id);
     }
 
-    //socket.io functionality will go here
-
     //saving the conversation and the message into the database
     // await conversation.save();
     // await newMessage.save();
     //Optimizing these two lines of code which will run in parallel
     await Promise.all([conversation.save(), newMessage.save()]);
+
+    //socket.io functionality will go here
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      //io.to(socketId).emit() -> used to send events to specific client
+      io.to(receiverSocketId).emit('newMessage', newMessage);
+    }
 
     //finally send an appropriate response
     res.status(201).json(newMessage);

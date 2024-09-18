@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import messageRoutes from './routes/message.routes.js';
 import userRoutes from './routes/user.routes.js';
+import { app, server } from './socket/socket.js';
 
 //Database Imports
 import connectToMongoDB from './db/connectToMongoDB.js';
@@ -16,7 +17,6 @@ import connectToMongoDB from './db/connectToMongoDB.js';
 dotenv.config();
 
 /////////////////////////////////////////////////Variables/////////////////////////////////////////
-const app = express();
 const PORT = process.env.PORT || 5000;
 
 /////////////////////////////////////////////////Middlewares/////////////////////////////////////////
@@ -37,7 +37,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
 
 /////////////////////////////////////////Initializing the server/////////////////////////////////////
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   connectToMongoDB();
   console.log(`Server is listening on port: ${PORT}`);
 });
